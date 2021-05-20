@@ -1,0 +1,1465 @@
+type PageInfo {
+  startCursor: String
+  endCursor: String
+  hasPrevPage: Boolean!
+  hasNextPage: Boolean!
+}
+
+type BasePaginationMeta {
+  itemCount: Float!
+  totalItems: Float!
+  itemsPerPage: Float!
+  totalPages: Float!
+  currentPage: Float!
+}
+
+type Reply implements Node {
+  id: ID!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  content: String!
+  inquiry: Inquiry!
+}
+
+"""
+Node
+"""
+interface Node {
+  id: ID!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type Inquiry implements Node {
+  id: ID!
+  title: String!
+  content: String!
+  inquiryRole: String!
+  status: InquiryStatus!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  user: User!
+  reply: Reply
+  inquiryCode: String!
+  images: [String!]
+  imagePaths: [String!]
+}
+
+enum InquiryStatus {
+  REQUEST
+  REPLY
+  REJECT
+}
+
+type InquiryConnection {
+  items: [Inquiry!]
+  meta: BasePaginationMeta!
+}
+
+type User implements Node {
+  id: ID!
+  name: String
+  email: String
+  nickname: String
+  phone: String
+  roles: String
+  avatar: String
+  interestTag: [String!]
+  website: String
+  instagramId: String
+  userCode: String
+  businessName: String
+  businessNumber: String
+  businessEmail: String
+  businessLocation: String
+  isNew: Boolean
+  kakaoId: String
+  naverId: String
+  appleId: String
+  isActive: Boolean
+  receiveEmail: Boolean
+  receiveMarketing: Boolean
+  receiveSNS: Boolean
+  inquiries: [Inquiry!]
+  bankName: String
+  bankNumber: String
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  status: RequestStatusEnum
+  avatarFilePath: String
+  myStore: Store
+  totalSales: Float
+  totalSettlement: Float
+}
+
+enum RequestStatusEnum {
+  REQUEST
+  ACCEPTED
+  REJECTED
+}
+
+type UserConnection {
+  items: [User!]
+  meta: BasePaginationMeta!
+}
+
+type Store implements Node {
+  id: ID!
+  name: String
+  description: String
+  avatar: String
+  phone: String
+  address: String
+  addressDetail: String
+  zipcode: String
+  caution: String
+  owner: String
+  latitude: Float
+  longitude: Float
+  openTime: String
+  closeTime: String
+  workDay: String
+  totalLike: Float!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  isLike: Boolean
+  bestProduct: [Product!]
+  reviewProductOfStore: ReviewConnection
+  mainMedia: Media
+  allProduct: ProductConnection
+  getPickSlot: [PickSlot!]
+  ownerInfo: User
+}
+
+type StoreConnection {
+  items: [Store!]
+  meta: BasePaginationMeta!
+}
+
+type HomeData {
+  todayOrder: Float!
+  totalPickup: Float!
+  weeklyRevenue: Float!
+  newReview: Float!
+  sellingProduct: Float!
+}
+
+type Request implements Node {
+  id: ID!
+  userId: String!
+  status: RequestStatusEnum!
+}
+
+type UserMetadata implements Node {
+  id: ID!
+  user: String!
+  pickupNotifify: Boolean!
+  reviewCommentNotify: Boolean!
+  createReviewNotify: Boolean!
+  eventNotify: Boolean!
+  responseNotify: Boolean!
+  orderNotify: Boolean!
+  settlementNotify: Boolean!
+  inquiryNotify: Boolean!
+}
+
+type MailHash implements Node {
+  id: ID!
+  email: String!
+  hash: String!
+}
+
+type Media implements Node {
+  id: ID!
+  fileSize: Int
+  name: String!
+  filePath: String
+  mimeType: String
+  height: Float!
+  width: Float!
+  isDeleted: Boolean!
+  ownerId: String
+  type: FileType!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  laundryId: String
+  owner: User
+  capabilities: MediaCapability
+}
+
+enum FileType {
+  FILE
+  DIR
+}
+
+type MediaConnection {
+  items: [Media!]
+  meta: BasePaginationMeta!
+}
+
+type MediaCapability {
+  canCopy: Boolean
+  canDelete: Boolean
+  canDownload: Boolean
+  canEdit: Boolean
+  canRename: Boolean
+}
+
+type PickSlot implements Node {
+  id: ID!
+  storeId: String!
+  type: PickSlotType!
+  numberOfCakes: Float!
+  openTime: DateTime
+  closeTime: DateTime
+  selected: [DateTime!]
+  gap: Float
+  startBreak: DateTime
+  endBreak: DateTime
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  storeInfo: Store!
+}
+
+enum PickSlotType {
+  TOTAL
+  TIMELY
+}
+
+type PickSlotConnection {
+  items: [PickSlot!]
+  meta: BasePaginationMeta!
+}
+
+type FavoriteStore implements Node {
+  id: ID!
+  userId: String!
+  storeId: String!
+}
+
+type Product implements Node {
+  id: ID!
+  name: String!
+  thumbImage: String
+  category: String
+  subCategory: String
+  price: Float!
+  isBest: Boolean!
+  isSelling: Boolean!
+  images: [String!]
+  tags: [String!]
+  description: String
+  caution: String!
+  storeId: String!
+  totalLike: Float!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  isLike: Boolean
+  storeInfo: Store
+  comments: ReviewConnection
+  mainMedia: Media
+  media: [Media!]
+  pickSlot: [PickSlot!]
+  option: [Option!]
+}
+
+type ProductConnection {
+  items: [Product!]
+  meta: BasePaginationMeta!
+}
+
+type Order implements Node {
+  id: ID!
+  userId: String!
+  storeId: String!
+  productId: String!
+  optionId: [String!]
+  customerName: String
+  customerPhone: String
+  totalPrice: Float!
+  note: String
+  hasReview: Boolean!
+  status: String!
+  pickUpTime: DateTime
+  commission: Float!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  productInfo: Product
+  paymentDate: DateTime
+  reviewInfo: Review
+  userInfo: User
+  storeInfo: Store
+  optionInfo: [Option!]
+  userTotalOrder: Float!
+}
+
+type OrderConnection {
+  items: [Order!]
+  meta: BasePaginationMeta!
+}
+
+type Review implements Node {
+  id: ID!
+  userId: String!
+  productId: String!
+  orderId: String!
+  content: String!
+  scoreFlavor: String!
+  scoreDesign: String!
+  totalScore: Float!
+  image: [String!]
+  reply: String
+  createdAt: DateTime!
+  mediaInfo: [Media!]!
+  productInfo: Product!
+  user: User!
+}
+
+type ReviewConnection {
+  items: [Review!]
+  meta: BasePaginationMeta!
+}
+
+type Reports implements Node {
+  id: ID!
+  storeId: String!
+  pickUpTime: String!
+  totalOrder: Float!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  totalSales: Float!
+  storeInfo: Store
+  ownerInfo: User
+}
+
+type PartnerReport {
+  totalCake: Float!
+  totalSales: Float!
+  averageSales: Float!
+  weekNumber: Float!
+  totalWork: Float!
+}
+
+type PartnerTotalReport {
+  totalCake: Float!
+  totalSales: Float!
+  averageSales: Float!
+  weekNumber: Float!
+  totalWork: Float!
+  averageSalesOnYear: Float!
+}
+
+type PaginationMeta {
+  itemCount: Float!
+  totalItems: Float!
+  itemsPerPage: Float!
+  totalPages: Float!
+  currentPage: Float!
+}
+
+type ReportConnection {
+  items: [Reports!]
+  meta: PaginationMeta!
+}
+
+type Notification implements Node {
+  id: ID!
+  source: String
+  title: String!
+  content: String!
+  userId: String!
+  isSeen: Boolean!
+  link: String
+  type: String
+  timeSend: String
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  sourceInfo: User
+}
+
+type NotificationConnection {
+  items: [Notification!]
+  meta: BasePaginationMeta!
+}
+
+type FcmToken implements Node {
+  id: ID!
+  userId: String!
+  token: String!
+  deviceId: String
+}
+
+type NotifyContent implements Node {
+  id: ID!
+  timeSend: String!
+  content: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  notification: ENotification!
+}
+
+type ENotification implements Node {
+  id: ID!
+  type: String!
+  role: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  details: [NotifyContent!]
+}
+
+type Option implements Node {
+  id: ID!
+  name: String!
+  type: String!
+  price: Float!
+  required: Boolean!
+  productId: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type FavoriteProduct implements Node {
+  id: ID!
+  productId: String!
+  userId: String!
+}
+
+type Event implements Node {
+  id: ID!
+  title: String
+  content: String
+  contentDetails: String
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  eventCode: String
+  imagePaths: [String!]
+}
+
+type EventConnection {
+  items: [Event!]
+  meta: BasePaginationMeta!
+}
+
+type Transaction implements Node {
+  id: ID!
+  orderId: String!
+  receiptId: String!
+  productName: String!
+  value: Float!
+  customerName: String!
+  customerPhone: String!
+  customerEmail: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  paymentMethod: PaymentMethodEnum
+  result: TransactionResultEnum!
+}
+
+enum PaymentMethodEnum {
+  kakao
+  npay
+  vbank
+  card
+}
+
+enum TransactionResultEnum {
+  PENDING
+  CANCELED
+  SUCCESS
+  ERROR
+}
+
+type Settlement implements Node {
+  id: ID!
+  storeId: String!
+  amount: Float!
+  expectedSettlementDate: DateTime!
+  isDone: Boolean!
+  payment: Float!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  storeInfo: Store!
+}
+
+type SettlementConnection {
+  items: [Settlement!]
+  meta: BasePaginationMeta!
+}
+
+type Category implements Node {
+  id: ID!
+  name: String!
+  parent: String!
+  code: String
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  children: [Category!]!
+}
+
+"""
+AuthConnection
+"""
+type AuthConnection {
+  accessToken: String
+  refreshToken: String
+  user: User!
+}
+
+type Sample implements Node {
+  id: ID!
+  views: Int!
+  title: String!
+  content: String!
+  isPublished: Boolean!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type FAQ implements Node {
+  id: ID!
+  title: String
+  content: String
+  contentDetails: String
+  faqRole: String
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  faqCode: String
+}
+
+type FAQConnection {
+  items: [FAQ!]
+  meta: BasePaginationMeta!
+}
+
+type Notice implements Node {
+  id: ID!
+  title: String!
+  content: String!
+  contentDetails: String
+  noticeRoles: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  noticeCode: String!
+}
+
+type NoticeConnection {
+  items: [Notice!]
+  meta: BasePaginationMeta!
+}
+
+type Location implements Node {
+  id: ID!
+  name: String!
+  parent: String
+  type: String!
+  status: Boolean!
+  index: String!
+  children: [Location!]
+}
+
+type Banner implements Node {
+  id: ID!
+  title: String
+  content: String
+  contentDetail: String!
+  bannerCode: String
+  type: String
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  position: Float!
+}
+
+type Chat implements Node {
+  id: ID!
+  userId: String!
+  storeId: String!
+  hasMessage: Boolean!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  storeInfo: Store
+  unReadMessage: Float!
+  lastMessage: Message
+  userInfo: User
+}
+
+type ChatConnection {
+  items: [Chat!]
+  meta: BasePaginationMeta!
+}
+
+type Message implements Node {
+  id: ID!
+  senderId: String!
+  message: String!
+  isRead: Boolean
+  type: String
+  width: Float
+  height: Float
+  chatId: String!
+  createdAt: DateTime!
+  senderInfo: User
+}
+
+type MessageConnection {
+  items: [Message!]
+  meta: BasePaginationMeta!
+}
+
+type CreateNewMessageType {
+  message: Message!
+}
+
+type DataDashboard {
+  total: String
+  status: String
+  currentDay: String
+  firstDayOfWeek: String
+  lastDayOfWeek: String
+}
+
+type Dashboard {
+  userDashboard: DataDashboard!
+  inquiryDashboard: DataDashboard!
+  todaySalesDashboard: DataDashboard!
+  currentWeekSales: DataDashboard!
+  currentWeekStoreSales: DataDashboard!
+}
+
+type Query {
+  me: User
+  isAvailable(value: String!, key: DuplicateCheckKey!): String!
+  user(id: String!): User
+  users(
+    limit: Int = 20
+    page: Int = 1
+    sortDirection: SortTypes = DESC
+    typeUser: GetUserType = NEW
+    searchCriteria: UserFilterCriteria = ALL
+    searchKey: String = ""
+  ): UserConnection
+  getPopularSearchKey: [String!]
+  medias(limit: Int = 15, page: Int = 1, parentId: String): MediaConnection
+  media(id: String!): Media
+  getPartners(
+    limit: Int = 20
+    page: Int = 1
+    sorts: SortTypes = DESC
+    roles: AppRoles = PARTNER
+    status: RequestStatusEnum = REQUEST
+    searchCriteria: PartnerFilterCriteria = ALL
+    searchKey: String = ""
+  ): UserConnection
+  getStores(
+    conditions: String
+    sortField: SortFieldEnum
+    district: [String!]
+    pickTime: [String!]
+    limit: Float!
+    page: Float!
+  ): StoreConnection!
+  getStoresAroundMe(latitude: Float!, longitude: Float!, limit: Float!, page: Float!): StoreConnection!
+  storeDetail(userId: String!): Store
+  myStore: Store
+  getFavoriteStore(page: Float!, limit: Float!): StoreConnection!
+  getPickUpOfStore(storeId: String!): PickSlotConnection!
+  getHomeData: HomeData!
+  getCategories(parent: String): [Category!]!
+  getRecommendProduct(limit: Float!, page: Float!): ProductConnection!
+  getRandomProduct(limit: Float!, page: Float!): ProductConnection!
+  getPopularProduct(limit: Float!, page: Float!): ProductConnection!
+  getProductAroundMe(
+    latitude: Float!
+    longitude: Float!
+    category: String!
+    limit: Float!
+    page: Float!
+  ): ProductConnection!
+  getProducts(
+    condition: String
+    category: String
+    sortField: SortFieldEnum
+    district: [String!]
+    pickTime: [String!]
+    page: Float!
+    limit: Float!
+  ): ProductConnection!
+  getProductDetail(productId: String!): Product
+  getFavoriteProducts(page: Float!, limit: Float!): ProductConnection!
+  myProduct(
+    isBest: Boolean
+    subCategory: String
+    category: String
+    page: Float!
+    limit: Float!
+    storeId: String!
+  ): ProductConnection!
+  getProductOfStore(page: Float!, limit: Float!, storeId: String!): ProductConnection!
+  getListReview(storeId: String!, limit: Float!, page: Float!): ReviewConnection!
+  getListReviewOfProduct(
+    orderBy: SortReviewEnum!
+    sorts: SortTypes!
+    productId: String!
+    limit: Float!
+    page: Float!
+  ): ReviewConnection!
+  getReviews(
+    storeId: String!
+    limit: Int = 10
+    page: Int = 1
+    sorts: SortTypes = DESC
+    orderBy: SortReviewEnum = DATE
+    searchCriteria: ReviewFilterCriteria = ALL
+    searchKey: String = ""
+  ): ReviewConnection!
+  myReview(page: Float!, limit: Float!): ReviewConnection
+  getReviewForPartner(limit: Int = 10, page: Int = 1): ReviewConnection!
+  getReviewDetails(reviewId: String!): Review!
+  getListOrder(
+    status: OrderStatus
+    hasReview: Boolean
+    orderIds: [String!]
+    page: Float!
+    limit: Float!
+  ): OrderConnection!
+  getListOrderReviewed(isReviewed: Boolean = false, page: Float!, limit: Float!): OrderConnection!
+  getAllOrder(
+    limit: Int = 20
+    page: Int = 1
+    sortType: OrderSortType = DESC
+    sortColumn: OrderSortColum = ORDER_DATE
+    searchOptions: OrderSearchOptions = ALL
+    searchKey: String = ""
+  ): OrderConnection!
+  getOrderDetails(id: String!): Order!
+  getAllOrderMyStore(limit: Int = 20, page: Int = 1, searchKey: String = ""): OrderConnection!
+  getAllOrderSameProduct(
+    limit: Int = 20
+    page: Int = 1
+    searchKey: String = ""
+    userId: String!
+    storeId: String!
+  ): OrderConnection!
+  getAllOrderInDay(
+    limit: Int = 20
+    page: Int = 1
+    sortType: OrderSortType = DESC
+    sortColumn: OrderSortColum = ORDER_DATE
+    searchOptions: OrderSearchOptions = ALL
+    searchKey: String = ""
+    day: String = "2021-05-12"
+  ): OrderConnection!
+  getOrderBySettlement(
+    sortDirection: OrderSettlementSortDirection = DESC
+    sortField: OrderSettlementSortField = ORDER_DATE
+    searchField: OrderSettlementField = ALL
+    searchKey: String!
+    type: SettlementGetType!
+    settlementId: String!
+    storeId: String!
+    page: Float!
+    limit: Float!
+  ): OrderConnection!
+  getTransactionDetail(id: String!): Transaction
+  getOrderLastTransaction(requestTime: String!, orderId: String!): Transaction
+  getNotifications(page: Float!, limit: Float!): NotificationConnection!
+  countUnseenNotification: Float!
+  getSettlements(
+    searchField: SettlementSearchField!
+    searchKey: String!
+    type: SettlementGetType!
+    page: Float!
+    limit: Float!
+  ): SettlementConnection!
+  getSettlementByStoreId(page: Float!, limit: Float!, storeId: String!): SettlementConnection!
+  getStoreReportOfMonth(month: String = "2021-05-12"): [Reports!]
+  getStoreReportOfWeekly(day: DateTime!): PartnerReport!
+  getStoreReportOfYear(day: DateTime!): PartnerTotalReport!
+  getReports(
+    type: ReportGetType!
+    searchField: ReportSearchKey!
+    searchKey: String!
+    page: Float!
+    limit: Float!
+  ): ReportConnection!
+  getPickSlotDetails(pickUpTime: DateTime!): [PickSlot!]!
+  getPickSlots(month: DateTime!): [PickSlot!]!
+  myMetadata: UserMetadata!
+  verifyResetLink(hash: String!): MailHash
+  getLocation(searchKey: String = "", parentId: String = "0"): [Location!]!
+  getNoticeDetails(id: String!): Notice!
+  notices(
+    limit: Float = 20
+    page: Float = 1
+    sortColumn: NoticeSortColumn = UPDATED_AT
+    sortDirection: SortTypes = DESC
+    noticeRole: CmsRoles!
+    searchOptions: NoticeFindColumn = ALL
+    searchKey: String = ""
+  ): NoticeConnection
+  FAQs(
+    limit: Float = 20
+    page: Float = 1
+    sorts: SortTypes = DESC
+    roles: CmsRoles!
+    searchOptions: FAQFindColumn = ALL
+    searchKey: String = ""
+  ): FAQConnection
+  FAQDetails(id: String!): FAQ
+  getEventDetails(id: String!): Event!
+  events(
+    limit: Float = 20
+    page: Float = 1
+    sortColumn: EventSortColumn = UPDATED_AT
+    sortDirection: SortTypes = DESC
+    searchOptions: EventFindColumn = ALL
+    searchKey: String = ""
+  ): EventConnection
+  inquiries(
+    limit: Float = 20
+    page: Float = 1
+    sorts: SortTypes = DESC
+    roles: CmsRoles!
+    searchOptions: InquiryFindColumn = ALL
+    searchKey: String = ""
+  ): InquiryConnection
+  getInquiryDetails(inquiryId: String!): Inquiry!
+  myInquiries(page: Float!, limit: Float!): InquiryConnection
+  banners: [Banner!]
+  bannerDetail(id: String!): Banner
+  enotifications(
+    role: CmsRoles!
+    searchUserOptions: ENotificationSearch = ALL
+    searchPartnerOptions: ENotificationPartnerSearch = ALL
+    searchKey: String = ""
+  ): [ENotification!]!
+  getNotifyContentDetail(id: String!): NotifyContent!
+  getDashboard: Dashboard!
+  getListChat(limit: Float!, page: Float!): ChatConnection!
+  getChatDetailById(chatId: String!): Chat!
+  getListMessages(limit: Float!, page: Float!, chatId: String!): MessageConnection!
+}
+
+enum DuplicateCheckKey {
+  EMAIL
+  PHONE
+  NICKNAME
+}
+
+enum SortTypes {
+  DESC
+  ASC
+}
+
+enum GetUserType {
+  NEW
+  ALL
+  TODAY
+}
+
+enum UserFilterCriteria {
+  MEMBER_ID
+  NAME
+  EMAIL
+  PHONE
+  ALL
+}
+
+enum AppRoles {
+  ALL
+  ADMIN
+  USER
+  PARTNER
+}
+
+enum PartnerFilterCriteria {
+  PARTNER_ID
+  NAME
+  EMAIL
+  PHONE
+  STORENAME
+  BUSINESSNUMBER
+  WEBSITE
+  LOCATION
+  ALL
+}
+
+enum SortFieldEnum {
+  LIKE
+  CREATED
+}
+
+enum SortReviewEnum {
+  DATE
+  SCORE
+}
+
+enum ReviewFilterCriteria {
+  USER_ID
+  CONTENT
+  FLAVOR_SCORE
+  DESIGN_SCORE
+  ALL
+}
+
+enum OrderStatus {
+  PENDING
+  WAIT_FOR_PAY
+  PAYMENT_COMPLETED
+  COMPLETED
+  CANCELED
+}
+
+enum OrderSortType {
+  DESC
+  ASC
+}
+
+enum OrderSortColum {
+  USER_CREATED
+  ORDER_DATE
+  ORDER_PICKUP_DATE
+}
+
+enum OrderSearchOptions {
+  ALL
+  USER_ID
+  USER_NAME
+  EMAIL
+  PHONE_NUMBER
+  CAKE_TYPE
+  STORE_NAME
+  VALUE
+}
+
+enum OrderSettlementSortDirection {
+  ASC
+  DESC
+}
+
+enum OrderSettlementSortField {
+  ORDER_DATE
+  PICKUP_DATE
+  USER_REGISTRATION_DATE
+}
+
+enum OrderSettlementField {
+  ALL
+  USER_ID
+  USER_NAME
+  EMAIL
+  PHONE_NUMBER
+  PRODUCT_NAME
+  STORE_NAME
+  VALUE
+}
+
+enum SettlementGetType {
+  WEEK
+  MONTH
+  ALL
+}
+
+enum SettlementSearchField {
+  NAME
+  OWNER_NAME
+  BANK_NUMBER
+  ADDRESS
+  PHONE
+  ALL
+}
+
+enum ReportGetType {
+  WEEK
+  MONTH
+  ALL
+}
+
+enum ReportSearchKey {
+  NAME
+  OWNER_NAME
+  BANK_NUMBER
+  ADDRESS
+  PHONE
+  ALL
+}
+
+enum NoticeSortColumn {
+  NOTICE_ID
+  CREATED_AT
+  TITLE
+  CONTENT
+  UPDATED_AT
+}
+
+enum CmsRoles {
+  USER
+  PARTNER
+}
+
+enum NoticeFindColumn {
+  NOTICE_ID
+  TITLE
+  CONTENT
+  ALL
+}
+
+enum FAQFindColumn {
+  FAQ_ID
+  TITLE
+  CONTENT
+  ALL
+}
+
+enum EventSortColumn {
+  EVENT_ID
+  CREATED_AT
+  TITLE
+  CONTENT
+  UPDATED_AT
+}
+
+enum EventFindColumn {
+  EVENT_ID
+  TITLE
+  CONTENT
+  ALL
+}
+
+enum InquiryFindColumn {
+  INQUIRY_ID
+  TITLE
+  CONTENT
+  USER_NAME
+  USER_EMAIL
+  USER_PHONE
+  ALL
+}
+
+enum ENotificationSearch {
+  ALL
+  PAYMENT
+  PICKUP
+  ANSWER
+  REVIEW
+  EVENT
+}
+
+enum ENotificationPartnerSearch {
+  ALL
+  ORDER
+  INQUIRY
+  NOTIFICATION
+  REVIEW
+  DAILY_PICKUP
+  SETTLEMENT
+}
+
+type Mutation {
+  updateUserInfo(input: UpdateUserInput!): User!
+  removeUser(userId: String!): User!
+  uploadMedia(provider: String = "LOCAL", parentId: ID, file: Upload!): Media!
+  uploadMediaToS3(parentId: ID, file: Upload!): Media!
+  removeMedia(id: ID): Media!
+  updateMedia(input: UpdateMediaInput!): Media!
+  createDir(parentId: ID, dirName: String!): Media!
+  updateRequestStatus(userId: String!, status: RequestStatusEnum!): Request!
+  createStore(input: CreateStoreDto!): Store!
+  updateStore(input: UpdateStoreDto!): Boolean!
+  removeStore(id: String!): Boolean!
+  reactionStore(input: CreateFavoriteStoreDto!): Boolean!
+  updatePartnerInfo(partnerInfo: UpdatePartnerInput!): Boolean!
+  createUpdateDeleteCategory(
+    dataDeleteCategory: [String!]!
+    dataUpdateCategory: [UpdateCategoryDto!]!
+    dataCreateCategory: [CreateCategoryDto!]!
+  ): [Category!]!
+  removeCategory(id: String!): Boolean!
+  createProduct(input: CreateProductDto!): Product!
+  updateProduct(input: CreateProductDto!, id: String!): Boolean!
+  reactionProduct(input: CreateFavoriteProductDto!): Boolean!
+  deleteProduct(id: String!): Boolean!
+  writeReview(data: CreateReviewDto!, orderId: String!, productId: String!, storeId: String!): Review!
+  replyReview(reply: String!, id: String!): Review!
+  removeReview(id: String!): Boolean!
+  createOrder(input: CreateOrderDTO!, storeId: String!): Order!
+  confirmOrder(receiptId: String!, input: UpdateOrderDTO!): Order
+  changeOrderStatus(orderId: String!, status: OrderStatus!): Boolean!
+  createTransaction(input: CreateTransactionInput!): Transaction!
+  updateTransactionStatus(result: TransactionResultEnum!, id: String!): Transaction
+  saveFcmToken(input: SaveFcmTokenInput!): FcmToken!
+  deleteFcmToken(deviceId: String!): Boolean!
+  markSeenNotification: Boolean!
+  markSeenNotificationById(id: String!): Notification!
+  checkDone(id: String!): Settlement
+  createPickSlot(input: CreatePickSlot!): Boolean!
+  updateUserMetadata(data: UpdateUserMetadataInput!): UserMetadata
+  login(input: LoginEmailInput!): AuthConnection!
+  register(user: UserRegister!): User!
+  partnerRegister(partner: PartnerRegister!): User!
+  loginWithSNS(input: LoginSNSInput!): AuthConnection!
+  resetPassword(input: ResetPasswordInput!): Boolean!
+  resetPasswordNoLogin(input: ResetPasswordNoLoginInput!): Boolean!
+  sendResetMail(email: String!): Boolean!
+  sendOTP(phone: String!): Boolean!
+  validateOTP(code: String!, phone: String!): Boolean!
+  findEmailByPhone(code: String!, phone: String!, name: String!): User!
+  requestChangePassword(code: String!, email: String!, phone: String!, name: String!): String!
+  updatePassword(input: ChangePasswordInput!): Boolean!
+  logout: Boolean!
+  changeStatusLocation(parentId: String!, ids: [String!]!): [Location!]!
+  deActiveCity(id: String!): [Location!]!
+  createNotice(title: String!, content: String!, noticeRoles: CmsRoles!, contentDetails: String!): Notice!
+  removeNotice(id: String!): Boolean!
+  updateNotice(title: String!, content: String!, contentDetails: String!, id: String!): Boolean!
+  createFAQ(title: String!, content: String!, contentDetails: String!, faqRole: CmsRoles!): FAQ!
+  removeFaq(id: String!): Boolean!
+  updateFaq(title: String!, content: String!, contentDetails: String!, id: String!): Boolean!
+  createEvent(title: String!, content: String!, contentDetails: String!): Event!
+  removeEvent(id: String!): Boolean!
+  updateEvent(id: String!, title: String!, content: String!, contentDetails: String!): Boolean!
+  createInquiry(title: String!, content: String!, inquiryRole: CmsRoles!, images: [String!]): Inquiry!
+  deleteInquiry(id: String!): Boolean!
+  createReplyInquiry(inquiryId: String!, content: String!): Reply!
+  createBanner(title: String!, content: String!, type: String = "이벤트"): Banner!
+  updateBanner(id: String!, title: String!, content: String!, type: String = "이벤트"): Boolean!
+  changeBannerPostition(banners: [ChangeBannerPositionInput!]!): [Banner!]!
+  removeBanner(id: String!): Boolean!
+  updateNotifyContent(timeSend: String!, content: String!, id: String!): Boolean!
+  startChat(data: CreateChatDto!): Chat!
+  sendMessage(data: CreateMessageInput!, receiverId: String!): Message!
+  markReadMessage(chatId: String!): Boolean!
+}
+
+input UpdateUserInput {
+  name: String
+  nickname: String
+  email: String
+  phone: String
+  avatar: String
+  password: String
+  roles: AppRoles
+  isNew: Boolean
+  snsToken: String
+  isActive: Boolean = false
+  snsType: SNSTypeEnum
+  kakaoId: String
+  naverId: String
+  appleId: String
+  receiveEmail: Boolean = false
+  receiveMarketing: Boolean = false
+  receiveSNS: Boolean = false
+  website: String
+  instagramId: String
+  businessName: String
+  businessNumber: String
+  businessLocation: String
+  businessEmail: String
+  bankName: String
+  bankNumber: String
+  interestTag: [String!]
+}
+
+enum SNSTypeEnum {
+  KAKAO
+  NAVER
+  APPLE
+}
+
+"""
+The `Upload` scalar type represents a file upload.
+"""
+scalar Upload
+
+input UpdateMediaInput {
+  id: ID!
+  name: String!
+}
+
+input CreateStoreDto {
+  name: String
+  description: String
+  avatar: String
+  openTime: String
+  closeTime: String
+  workDay: String
+  phone: String
+  address: String
+  addressDetail: String
+  zipcode: String
+  caution: String
+  latitude: Float
+  longitude: Float
+}
+
+input UpdateStoreDto {
+  name: String
+  description: String
+  avatar: String
+  openTime: String
+  closeTime: String
+  workDay: String
+  phone: String
+  address: String
+  addressDetail: String
+  zipcode: String
+  caution: String
+  latitude: Float
+  longitude: Float
+  id: String!
+}
+
+input CreateFavoriteStoreDto {
+  storeId: String
+  userId: String
+}
+
+input UpdatePartnerInput {
+  email: String!
+  password: String = null
+  businessNumber: String!
+  avatar: String
+  website: String
+  instagramId: String
+  bankName: String
+  bankNumber: String
+}
+
+input UpdateCategoryDto {
+  name: String!
+  parent: String
+  code: String
+  id: String!
+}
+
+input CreateCategoryDto {
+  name: String!
+  parent: String
+  code: String
+}
+
+input CreateProductDto {
+  name: String
+  thumbImage: String
+  category: String
+  subCategory: String
+  price: Float
+  isBest: Boolean
+  isSelling: Boolean
+  images: [String!]
+  tags: [String!]
+  description: String
+  caution: String
+  totalLike: Float
+  options: [OptionCreateProduct!]
+}
+
+input OptionCreateProduct {
+  type: String!
+  data: [OptionItem!]!
+  required: Boolean = false
+}
+
+input OptionItem {
+  name: String!
+  price: String!
+}
+
+input CreateFavoriteProductDto {
+  productId: String
+  userId: String
+}
+
+input CreateReviewDto {
+  scoreFlavor: ReviewScore
+  scoreDesign: ReviewScore
+  content: String!
+  image: [String!]
+}
+
+enum ReviewScore {
+  SOSO
+  GOOD
+  EXCELLENT
+}
+
+input CreateOrderDTO {
+  customerName: String
+  customerPhone: String
+  note: String
+  paymentMethod: String
+  productId: String!
+  optionId: [String!]
+  status: OrderStatus = PENDING
+  totalPrice: Float!
+  pickUpTime: String!
+}
+
+input UpdateOrderDTO {
+  customerName: String
+  customerPhone: String
+  note: String
+  paymentMethod: String
+  productId: String
+  optionId: [String!]
+  status: OrderStatus = PENDING
+  totalPrice: Float
+  pickUpTime: String
+  id: String!
+}
+
+input CreateTransactionInput {
+  orderId: String!
+  receiptId: String!
+  productName: String!
+  value: Float!
+  customerName: String!
+  customerPhone: String!
+  customerEmail: String!
+  paymentMethod: PaymentMethodEnum!
+  result: TransactionResultEnum!
+}
+
+input SaveFcmTokenInput {
+  token: String!
+  deviceId: String
+}
+
+input CreatePickSlot {
+  storeId: String!
+  type: PickSlotType = TOTAL
+  slotInfo: [SlotInfo!]!
+}
+
+input SlotInfo {
+  numberOfCakes: Float!
+  gap: Float
+  openTime: DateTime!
+  closeTime: DateTime!
+  startBreak: DateTime
+  endBreak: DateTime
+}
+
+input UpdateUserMetadataInput {
+  pickupNotifify: Boolean
+  reviewCommentNotify: Boolean
+  createReviewNotify: Boolean
+  eventNotify: Boolean
+  responseNotify: Boolean
+  orderNotify: Boolean
+  settlementNotify: Boolean
+  inquiryNotify: Boolean
+}
+
+input LoginEmailInput {
+  email: String!
+  password: String!
+}
+
+input UserRegister {
+  name: String
+  nickname: String
+  email: String!
+  phone: String
+  avatar: String
+  password: String
+  roles: AppRoles!
+  isNew: Boolean
+  snsToken: String
+  isActive: Boolean = false
+  snsType: SNSTypeEnum
+  kakaoId: String
+  naverId: String
+  appleId: String
+  receiveEmail: Boolean = false
+  receiveMarketing: Boolean = false
+  receiveSNS: Boolean = false
+}
+
+input PartnerRegister {
+  name: String
+  nickname: String
+  email: String!
+  phone: String
+  avatar: String
+  password: String
+  roles: AppRoles!
+  isNew: Boolean
+  snsToken: String
+  isActive: Boolean = false
+  snsType: SNSTypeEnum
+  kakaoId: String
+  naverId: String
+  appleId: String
+  receiveEmail: Boolean = false
+  receiveMarketing: Boolean = false
+  receiveSNS: Boolean = false
+  website: String
+  instagramId: String
+  businessName: String
+  businessNumber: String
+  businessLocation: String
+  businessEmail: String
+  bankName: String
+  bankNumber: String
+}
+
+input LoginSNSInput {
+  snsToken: String
+  snsType: SNSTypeEnum!
+}
+
+input ResetPasswordInput {
+  password: String!
+  confirmPassword: String!
+  hash: String!
+}
+
+input ResetPasswordNoLoginInput {
+  password: String!
+  confirmPassword: String!
+  email: String!
+}
+
+input ChangePasswordInput {
+  old_password: String!
+  new_password: String!
+}
+
+input ChangeBannerPositionInput {
+  id: String!
+  title: String!
+  content: String!
+  contentDetail: String!
+  type: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  position: Float!
+  bannerCode: String!
+}
+
+input CreateChatDto {
+  userId: String!
+  storeId: String!
+}
+
+input CreateMessageInput {
+  chatId: String!
+  message: String!
+  type: MessageTypeEnum = TEXT
+  width: Float = 0
+  height: Float = 0
+}
+
+enum MessageTypeEnum {
+  TEXT
+  IMAGE
+}
+
+type Subscription {
+  onCreateTransaction: Transaction!
+  onCreateNewChat: Chat!
+  onNewMessage: CreateNewMessageType!
+}

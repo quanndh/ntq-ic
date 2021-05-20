@@ -1,0 +1,8 @@
+{
+  "name": "dxday",
+  "displayName": "Cakey",
+  "API_URL": "http://api-cakey.ntq.solutions/graphql",
+  "UPLOAD_URL": "http://api-cakey.ntq.solutions/api/v1/media/upload",
+  "BOOTPAY_ANDROID_ID": "600a3a2b5b2948001d51eb15",
+  "BOOTPAY_IOS_ID": "600a3a2b5b2948001d51eb16"
+}

@@ -1,0 +1,37 @@
+{
+  "possibleTypes": {
+    "Node": [
+      "Reply",
+      "Inquiry",
+      "User",
+      "Store",
+      "Request",
+      "UserMetadata",
+      "MailHash",
+      "Media",
+      "PickSlot",
+      "FavoriteStore",
+      "Product",
+      "Order",
+      "Review",
+      "Reports",
+      "Notification",
+      "FcmToken",
+      "NotifyContent",
+      "ENotification",
+      "Option",
+      "FavoriteProduct",
+      "Event",
+      "Transaction",
+      "Settlement",
+      "Category",
+      "Sample",
+      "FAQ",
+      "Notice",
+      "Location",
+      "Banner",
+      "Chat",
+      "Message"
+    ]
+  }
+}
